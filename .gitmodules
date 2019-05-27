@@ -1,0 +1,9 @@
+[submodule "enma_pe"]
+	path = enma_pe
+	url = https://github.com/jnastarot/enma_pe.git
+[submodule "fukutasm"]
+	path = fukutasm
+	url = https://github.com/jnastarot/fukutasm.git
+[submodule "capstone"]
+	path = capstone
+	url = https://github.com/jnastarot/capstone.git
