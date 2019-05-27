@@ -4,6 +4,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soul_eater", "soul_eater\soul_eater.vcxproj", "{E2FEF373-8276-4A5C-B528-DB32650B376C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7} = {5B01D900-2359-44CA-9914-6B0C6AFB7BE7}
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7} = {0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC} = {5B0E07A2-6928-44E0-AF0A-445B067C71CC}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "enma_pe", "enma_pe\enma_pe\enma_pe.vcxproj", "{5B0E07A2-6928-44E0-AF0A-445B067C71CC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fukutasm", "fukutasm\fukutasm\fukutasm.vcxproj", "{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capstone_static", "capstone\msvc\capstone_static\capstone_static.vcxproj", "{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deps", "deps", "{F24F42AC-4BDC-43F6-B6B5-491A85DA870B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +34,38 @@ Global
 		{E2FEF373-8276-4A5C-B528-DB32650B376C}.Release|x64.Build.0 = Release|x64
 		{E2FEF373-8276-4A5C-B528-DB32650B376C}.Release|x86.ActiveCfg = Release|Win32
 		{E2FEF373-8276-4A5C-B528-DB32650B376C}.Release|x86.Build.0 = Release|Win32
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Debug|x64.ActiveCfg = Debug|x64
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Debug|x64.Build.0 = Debug|x64
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Debug|x86.ActiveCfg = Debug|Win32
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Debug|x86.Build.0 = Debug|Win32
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Release|x64.ActiveCfg = Release|x64
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Release|x64.Build.0 = Release|x64
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Release|x86.ActiveCfg = Release|Win32
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC}.Release|x86.Build.0 = Release|Win32
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Debug|x64.ActiveCfg = Debug|x64
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Debug|x64.Build.0 = Debug|x64
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Debug|x86.ActiveCfg = Debug|Win32
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Debug|x86.Build.0 = Debug|Win32
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Release|x64.ActiveCfg = Release|x64
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Release|x64.Build.0 = Release|x64
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Release|x86.ActiveCfg = Release|Win32
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7}.Release|x86.Build.0 = Release|Win32
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Debug|x64.ActiveCfg = Debug|x64
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Debug|x64.Build.0 = Debug|x64
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Debug|x86.ActiveCfg = Debug|Win32
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Debug|x86.Build.0 = Debug|Win32
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x64.ActiveCfg = Release|x64
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x64.Build.0 = Release|x64
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x86.ActiveCfg = Release|Win32
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B0E07A2-6928-44E0-AF0A-445B067C71CC} = {F24F42AC-4BDC-43F6-B6B5-491A85DA870B}
+		{0A569853-B3F6-4BE5-A7DA-F88EFCE68EC7} = {F24F42AC-4BDC-43F6-B6B5-491A85DA870B}
+		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7} = {F24F42AC-4BDC-43F6-B6B5-491A85DA870B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D2AAFCE6-BA94-434D-B555-B1F2C686333F}
