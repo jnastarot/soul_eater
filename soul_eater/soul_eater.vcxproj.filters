@@ -13,15 +13,36 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Исходные файлы\soul_linker">
+      <UniqueIdentifier>{2a846575-e49b-4cc6-a916-48e03cc65dee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Исходные файлы\soul_spider">
+      <UniqueIdentifier>{dd76a199-bd23-4755-becb-a5bb79276d11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="soul_eater.h">
+      <Filter>Исходные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="soul_spider.h">
+      <Filter>Исходные файлы\soul_spider</Filter>
+    </ClInclude>
+    <ClInclude Include="soul_linker.h">
+      <Filter>Исходные файлы\soul_linker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="soul_spider.cpp">
+      <Filter>Исходные файлы\soul_spider</Filter>
+    </ClCompile>
+    <ClCompile Include="soul_linker.cpp">
+      <Filter>Исходные файлы\soul_linker</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -18,6 +18,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capstone_static", "capstone
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deps", "deps", "{F24F42AC-4BDC-43F6-B6B5-491A85DA870B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soul_eater_console", "soul_eater_console\soul_eater_console.vcxproj", "{140EAC62-E037-4321-9D0D-09D1DA05B817}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E2FEF373-8276-4A5C-B528-DB32650B376C} = {E2FEF373-8276-4A5C-B528-DB32650B376C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +63,14 @@ Global
 		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x64.Build.0 = Release|x64
 		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x86.ActiveCfg = Release|Win32
 		{5B01D900-2359-44CA-9914-6B0C6AFB7BE7}.Release|x86.Build.0 = Release|Win32
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Debug|x64.ActiveCfg = Debug|x64
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Debug|x64.Build.0 = Debug|x64
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Debug|x86.ActiveCfg = Debug|Win32
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Debug|x86.Build.0 = Debug|Win32
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Release|x64.ActiveCfg = Release|x64
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Release|x64.Build.0 = Release|x64
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Release|x86.ActiveCfg = Release|Win32
+		{140EAC62-E037-4321-9D0D-09D1DA05B817}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
