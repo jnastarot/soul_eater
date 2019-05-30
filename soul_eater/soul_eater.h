@@ -10,8 +10,9 @@ struct se_function_entry{
 
 struct se_data_entry {
     uint64_t entry_original_va;
-    uint64_t entry_new_va;
     size_t data_size;
+    uint64_t entry_new_va;
+
     std::vector<uint8_t> raw_data;
 };
 

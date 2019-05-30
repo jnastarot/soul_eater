@@ -14,121 +14,125 @@ bool function_basic_block_processor(
     uint64_t process_va,
     std::vector<uint8_t>& image_map,
     std::vector<uint64_t>& process_queue,
-    std::map<uint64_t, uint32_t>& processed_addresses) {
-
-    cs_insn *insn;
-    size_t count = cs_disasm(handle, &image_map[process_va - image_base], 0x1000, process_va, 0, &insn); //TODO: CHUNK SIZE
-
-    if (count) {
-
-        for (size_t insn_idx = 0; insn_idx < count; insn_idx++) {
-            fuku_instruction &line = code_holder.add_line();
-
-            auto& current_insn = insn[insn_idx];
-
-            processed_addresses[current_insn.address] = current_insn.size;
-
-            line.set_source_virtual_address(current_insn.address)
-                .set_virtual_address(current_insn.address)
-                .set_op_code(&image_map[current_insn.address - image_base], (uint8_t)current_insn.size)
-                .set_used_eflags(current_insn.detail->x86.eflags)
-                .set_id(current_insn.id)
-                .set_used_regs(current_insn.detail->x86.encoding.disp_offset << 8 | current_insn.detail->x86.encoding.imm_offset);
+    std::map<uint64_t, uint32_t>& processed_addresses, uint32_t flags) {
 
 
-            for (uint8_t op_idx = 0; op_idx < current_insn.detail->x86.op_count; op_idx++) {
-                auto& operand = current_insn.detail->x86.operands[op_idx];
+    const uint8_t *code = &image_map[process_va - image_base];
+    size_t available_size = image_map.size() - (process_va - image_base);
+    uint64_t basic_block_va = process_va;
 
-                if (operand.type == X86_OP_MEM) {
-
-                    if (operand.mem.base == X86_REG_RIP) {
-
-                        line.set_rip_relocation_idx(
-                            code_holder.create_rip_relocation(current_insn.detail->x86.encoding.disp_offset, X86_REL_ADDR(current_insn))
-                        );
-
-                        break;
-                    }
-                }
-            }
-
-            switch (current_insn.id) {
-            case  X86_INS_CALL:
-            case  X86_INS_JO: case  X86_INS_JNO:
-            case  X86_INS_JB: case  X86_INS_JAE:
-            case  X86_INS_JE: case  X86_INS_JNE:
-            case  X86_INS_JBE:case  X86_INS_JA:
-            case  X86_INS_JS: case  X86_INS_JNS:
-            case  X86_INS_JP: case  X86_INS_JNP:
-            case  X86_INS_JL: case  X86_INS_JGE:
-            case  X86_INS_JLE:case  X86_INS_JG:
-            case  X86_INS_JMP:
-            case  X86_INS_JECXZ:case X86_INS_JCXZ:
-            case  X86_INS_LOOP: case X86_INS_LOOPE: case X86_INS_LOOPNE: {
-
-                if (current_insn.detail->x86.operands[0].type == X86_OP_IMM) {
-
-                    uint64_t target_va = X86_REL_ADDR(current_insn);
-
-                    line.set_rip_relocation_idx(
-                        code_holder.create_rip_relocation(current_insn.detail->x86.encoding.imm_offset, target_va)
-                    );
-
-                    if (process_va > target_va ||
-                        current_insn.address < target_va) {
-
-                        process_queue.push_back(target_va);
-                    }
-
-                }
-
-                break;
-            }
-
-            default:break;
-
-            }
-
-
-            if (current_insn.id == X86_INS_JMP &&
-                current_insn.detail->x86.operands[0].type != X86_OP_IMM) {
-
-                if (current_insn.detail->x86.operands[0].type == X86_OP_MEM &&
-                    (current_insn.detail->x86.operands[0].mem.base == X86_REG_RIP ||
-                        current_insn.detail->x86.operands[0].mem.base == X86_REG_INVALID) &&
-                    current_insn.detail->x86.operands[1].mem.base == X86_REG_INVALID) {
-
-
-                    continue;
-                }
-
-
-                printf("has unreachable jmp in va 0x%I64x (basic block) \n", process_va);
-
-                cs_free(insn, count);
-                return false;
-
-            }
-            else if (current_insn.id == X86_INS_RET ||
-                current_insn.id == X86_INS_JMP ||
-                current_insn.id == X86_INS_INT3) {
-
-                cs_free(insn, count);
-                return true;
-            }
-        }
-    }
-    else {
-
-        printf("error to disassamle in va 0x%I64x (basic block) \n", process_va);
-
+    if (available_size > image_map.size()) {
+        printf("available code size overflow! \n");
         return false;
     }
+    
+    cs_insn *insn = cs_malloc(handle);
+
+    while (cs_disasm_iter(handle, &code, &available_size, &basic_block_va, insn)) {
+
+        fuku_instruction &line = code_holder.add_line();
+
+        processed_addresses[insn->address] = insn->size;
+
+        line.set_source_virtual_address(insn->address)
+            .set_virtual_address(insn->address)
+            .set_op_code(&image_map[insn->address - image_base], (uint8_t)insn->size)
+            .set_used_eflags(insn->detail->x86.eflags)
+            .set_id(insn->id)
+            .set_used_regs(insn->detail->x86.encoding.disp_offset << 8 | insn->detail->x86.encoding.imm_offset);
 
 
-    cs_free(insn, count);
+        for (uint8_t op_idx = 0; op_idx < insn->detail->x86.op_count; op_idx++) {
+            auto& operand = insn->detail->x86.operands[op_idx];
 
-    return true;
+            if (operand.type == X86_OP_MEM) {
+
+                if (operand.mem.base == X86_REG_RIP) {
+
+                    line.set_rip_relocation_idx(
+                        code_holder.create_rip_relocation(insn->detail->x86.encoding.disp_offset, X86_REL_ADDR(*insn))
+                    );
+
+                    break;
+                }
+            }
+        }
+
+        switch (insn->id) {
+        case  X86_INS_CALL:
+        case  X86_INS_JO: case  X86_INS_JNO:
+        case  X86_INS_JB: case  X86_INS_JAE:
+        case  X86_INS_JE: case  X86_INS_JNE:
+        case  X86_INS_JBE:case  X86_INS_JA:
+        case  X86_INS_JS: case  X86_INS_JNS:
+        case  X86_INS_JP: case  X86_INS_JNP:
+        case  X86_INS_JL: case  X86_INS_JGE:
+        case  X86_INS_JLE:case  X86_INS_JG:
+        case  X86_INS_JMP:
+        case  X86_INS_JECXZ:case X86_INS_JCXZ:
+        case  X86_INS_LOOP: case X86_INS_LOOPE: case X86_INS_LOOPNE: {
+
+            if (insn->detail->x86.operands[0].type == X86_OP_IMM) {
+
+                uint64_t target_va = X86_REL_ADDR(*insn);
+
+                line.set_rip_relocation_idx(
+                    code_holder.create_rip_relocation(insn->detail->x86.encoding.imm_offset, target_va)
+                );
+
+                if (process_va > target_va ||
+                    insn->address < target_va) {
+
+                    process_queue.push_back(target_va);
+                }
+            }
+
+            break;
+        }
+
+        default:break;
+
+        }
+
+
+        if (insn->id == X86_INS_JMP &&
+            insn->detail->x86.operands[0].type != X86_OP_IMM) {
+
+            if (insn->detail->x86.operands[0].type == X86_OP_MEM &&
+                (insn->detail->x86.operands[0].mem.base == X86_REG_RIP ||
+                    insn->detail->x86.operands[0].mem.base == X86_REG_INVALID) &&
+                insn->detail->x86.operands[1].mem.base == X86_REG_INVALID) {
+
+                continue;
+            }
+
+            if (!(flags & SE_CODE_SPIDER_ALLOW_UNREACHABLE_JMP)) {
+                printf("has unreachable jmp in va 0x%I64x (basic block) \n", process_va);
+
+                cs_free(insn, 1);
+                return false;
+            }
+
+        }
+
+        else if (insn->id == X86_INS_RET ||
+            insn->id == X86_INS_JMP ||
+           (flags & SE_CODE_SPIDER_STOP_ON_INT3) && insn->id == X86_INS_INT3) {
+
+            cs_free(insn, 1);
+            return true;
+        }
+    }
+
+    cs_free(insn, 1);
+
+    if (!(flags & SE_CODE_SPIDER_ALLOW_UNRETURNED_CODE)) {
+        return true;
+    }
+    else {
+        printf("found unreturned basic block in va (0x%I64x) \n", process_va);
+        return false;
+    }
 }
 
 
@@ -269,7 +273,7 @@ void extend_handle_jmps(fuku_code_holder& code_holder) {
 }
 
 
-se_soul_spider_initialize_status se_soul_spider_initialize_code(soul_holder& soul) {
+se_soul_spider_initialize_status se_soul_spider_initialize_code(soul_holder& soul, uint32_t flags) {
 
     std::vector<uint64_t> process_queue;
     std::map<uint64_t, uint32_t> processed_addresses;
@@ -329,9 +333,8 @@ se_soul_spider_initialize_status se_soul_spider_initialize_code(soul_holder& sou
                     handle,
                     soul.code_holder,
                     image.get_image_base(), process_queue[process_va_idx], image_map,
-                    process_queue, processed_addresses)) {
+                    process_queue, processed_addresses, flags)) {
 
-                    printf("its must not happened!\n");
 
                     cs_close(&handle);
                     return se_soul_spider_initialize_status_fail;
@@ -387,8 +390,10 @@ se_soul_spider_initialize_status se_soul_spider_initialize_data(
     soul_holder& soul
 ) {
 
+    pe_image& image = soul.main_image.get_image();
+
     {//get data raw
-        pe_image_io data_io(soul.main_image.get_image());
+        pe_image_io data_io(image);
 
         for (auto& dep_entry : soul.dependencies) {
 
