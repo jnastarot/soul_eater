@@ -1,25 +1,42 @@
 ﻿#include "pch.h"
 #include <iostream>
 
-int main() {
+
+int main(int argc, char **argv) {
+
+    /*
+    if (argc < 2) {
+        printf("please set soul_map file as a argument!\n");
+        return 0;
+    }
+    */
+
+
+    argv[1] = (char*)"C:\\projects\\soul_eater\\example\\soul_map.txt";
 
     soul_holder sh;
-    sh.main_image = pe_image(std::string("..\\..\\app for test\\test.sys"));
-    sh.functions.push_back({0x1C000E0F0 , 0});
-    sh.dependencies.push_back({ 0x1C009BE74, 4, 0, std::vector<uint8_t>() });
-    sh.dependencies.push_back({ 0x1C009BE70, 4, 0, std::vector<uint8_t>() });
-    sh.dependencies.push_back({ 0x1C009BEC0, 0x800, 0, std::vector<uint8_t>() });
-    sh.dependencies.push_back({ 0x1c0035000, 0x4000, 0, std::vector<uint8_t>() });
 
+    if (process_text_map(argv[1], sh)) {
 
-    if (!se_soul_spider_initialize_code(sh, 0) &&
-        !se_soul_spider_initialize_data(sh)) {
+        if (!se_soul_spider_initialize_code(sh, 0) &&
+            !se_soul_spider_initialize_data(sh)) {
 
-        pe_image new_image;
+            pe_image_full new_image;
 
-        se_soul_link(sh, new_image);
+            se_soul_link(sh, new_image);
+
+            std::vector<uint8_t> out_image;
+            build_pe_image_full(new_image, PE_IMAGE_BUILD_ALL_EXTENDED_SECTIONS | PE_IMAGE_BUILD_ALL_DIRECTORIES, out_image);
+
+            FILE* hTargetFile;
+            fopen_s(&hTargetFile, "..\\..\\app for test\\sl_test.exe", "wb");
+
+            if (hTargetFile) {
+                fwrite(out_image.data(), out_image.size(), 1, hTargetFile);
+                fclose(hTargetFile);
+            }
+        }
     }
-
 
 
     return 0;

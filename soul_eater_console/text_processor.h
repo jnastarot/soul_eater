@@ -1,8 +1,5 @@
 #pragma once
-class text_processor
-{
-public:
-    text_processor();
-    ~text_processor();
-};
+
+bool process_text_map(const std::string& text_map, soul_holder& sh);
+
 

@@ -8,5 +8,5 @@ enum se_soul_spider_link_status {
 
 
 se_soul_spider_link_status se_soul_link(
-    soul_holder& soul, pe_image& new_image
+    soul_holder& soul, pe_image_full& new_image
 );

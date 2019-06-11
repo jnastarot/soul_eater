@@ -22,7 +22,7 @@ bool function_basic_block_processor(
     uint64_t basic_block_va = process_va;
 
     if (available_size > image_map.size()) {
-        printf("available code size overflow! \n");
+        printf("code size over module range! \n");
         return false;
     }
     

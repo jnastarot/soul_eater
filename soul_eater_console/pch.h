@@ -15,9 +15,8 @@
 #include <sstream>
 #include <stdarg.h> 
 #include <iostream>
-#include <iostream>
-
 #include <locale.h>
+#include <fstream>
 
 using namespace std;
 
